@@ -1,13 +1,29 @@
-namespace MinimalApi.Infra.Db;
+using Microsoft.EntityFrameworkCore;
+using minimal_api.Domain.Entities;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
-public class DbContext : DbContext
+namespace MinimalApi.Infra.Db
+{
+    public class DbContexto : DbContext
     {
-        public DbSet<Estudante>Estudantes{get; set;}
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public DbSet<Administrador> Administradores { get; set; } = default!;
+        public DbSet<Veiculo> Veiculos { get; set; } = default!;
+
+        public DbContexto(DbContextOptions<DbContexto> options) : base(options)
         {
-            optionsBuilder.UseNpgsql("Server=127.0.0.1;Port=5432;Database=Estudantes;User Id=postgres;Password=SUASENHA");
-            optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);
-            optionsBuilder.EnableSensitiveDataLogging();
-            base.OnConfiguring(optionsBuilder);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Administrador>().HasData(
+                new Administrador
+                {
+                    Id = 1,
+                    Email = "adm@teste.com",
+                    Senha = "123456",
+                    Perfil = "Administrador"
+                }
+            );
         }
     }
+}
